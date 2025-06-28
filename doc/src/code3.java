@@ -1,5 +1,4 @@
     private void addEmptyCell() {
-        // 功能：创建一个空白单元格并添加到日历网格中
         View emptyView = LayoutInflater.from(getContext())
                 .inflate(R.layout.calendar_day_cell, calendarGrid, false);
         TextView dayNumber = emptyView.findViewById(R.id.dayNumber);

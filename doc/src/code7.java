@@ -1,7 +1,40 @@
-    /**
-     * 核心函数：刷新今日日程，加载今日的事件并更新 RecyclerView 的数据。
-     * 同时更新任务数据汇总和进度显示。
-     */
+
+    @Override
+    public void onEventAdded(Event event) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate eventDate = event.getDate();
+            LocalDate today = LocalDate.now();
+
+            Log.d(TAG, "收到事件添加通知: " + event.getDescription());
+            Log.d(TAG, "事件日期: " + eventDate);
+            Log.d(TAG, "今日日期: " + today);
+            Log.d(TAG, "日期是否相等: " + eventDate.isEqual(today));
+
+            if (eventDate.isEqual(today)) {
+                Log.d(TAG, "事件属于今日，刷新UI");
+                requireActivity().runOnUiThread(() -> {
+                    refreshEvents();
+                    Toast.makeText(getContext(), "今日日程已更新", Toast.LENGTH_SHORT).show();
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.d(TAG, "用户手动刷新今日日程");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            refreshEvents();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateDate() {
+        LocalDate today = LocalDate.now();
+        dateTextView.setText(today.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日")));
+    }
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     void refreshEvents() {
         Log.d(TAG, "开始刷新今日日程");
